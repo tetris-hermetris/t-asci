@@ -1,0 +1,5 @@
+= t-asci
+
+Task manager with https://en.wikipedia.org/wiki/Ascus[asci] inside.
+
+On early stage, not working yet
