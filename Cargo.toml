@@ -9,4 +9,5 @@ edition = "2018"
 [dependencies]
 date_time = "2.1.0"
 ron = "0.6.2"
+serde = { version = "1.0", features = ["derive"] }
 fsio = "0.1.3"

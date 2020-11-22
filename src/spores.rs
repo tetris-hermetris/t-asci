@@ -1,23 +1,26 @@
+use serde::{Serialize, Deserialize};
 use date_time::date_tuple::DateTuple;
 use date_time::time_tuple::Duration;
 
 #[derive(Debug, PartialEq, Clone)]
-pub struct Spores<'a> (Vec<Spore<'a>>);
+pub struct Spores (Vec<Spore>);
 
-#[derive(Debug, PartialEq, Clone)]
-pub struct Spore<'a> {
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+pub struct Spore {
     pub tag: String,
     pub id: u16,
-    pub next: Vec<&'a Spore<'a>>,
-    pub prev: Vec<&'a Spore<'a>>,
-    pub date: DateTuple,
-    pub dur: Duration,
+
+    pub next: Vec<u16>,
+
+    pub prev: Vec<u16>,
+    pub date: String,
+    pub dur: String,
     pub state: SporeState,
 }
 
-impl Spores<'static> {
+impl Spores {
     
-    pub fn new() -> Spores<'static> {
+    pub fn new() -> Spores {
         Spores (Vec::new())
     }
 
@@ -27,8 +30,8 @@ impl Spores<'static> {
             id: tag.into_bytes().iter().copied().map(u16::from).sum::<u16>(),
             next: vec![],
             prev: vec![],
-            date: DateTuple::today(),
-            dur: Duration::new(01, 00, 00),
+            date: DateTuple::today().to_string(),
+            dur: Duration::new(01, 00, 00).to_string(),
             state: SporeState::DoState,
         };
         &self.0.push(spore);
@@ -40,8 +43,8 @@ impl Spores<'static> {
 
 }
 
-impl<'a> IntoIterator for Spores<'a> {
-    type Item = Spore<'a>;
+impl IntoIterator for Spores {
+    type Item = Spore;
     type IntoIter = std::vec::IntoIter<Self::Item>;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -49,7 +52,7 @@ impl<'a> IntoIterator for Spores<'a> {
     }
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum SporeState {
     DoState,
     DoingState,
@@ -63,7 +66,7 @@ mod tests {
     #[test]
     fn test_init_spores() {
         let spores = Spores::new();
-        assert_eq!( spores, Spores::new())
+        assert_eq!(spores, Spores::new())
     }
 
     #[test]
