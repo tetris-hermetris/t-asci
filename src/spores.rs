@@ -1,27 +1,31 @@
-use serde::{Serialize, Deserialize};
 use date_time::date_tuple::DateTuple;
 use date_time::time_tuple::Duration;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone)]
-pub struct Spores (Vec<Spore>);
+pub struct Spores(Vec<Spore>);
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Spore {
     pub tag: String,
     pub id: u16,
-
     pub next: Vec<u16>,
-
     pub prev: Vec<u16>,
     pub date: String,
     pub dur: String,
     pub state: SporeState,
 }
 
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+pub enum SporeState {
+    toDoState,
+    DoingState,
+    DoneState,
+}
+
 impl Spores {
-    
     pub fn new() -> Spores {
-        Spores (Vec::new())
+        Spores(Vec::new())
     }
 
     pub fn insert_spore(&mut self, tag: String) {
@@ -32,7 +36,7 @@ impl Spores {
             prev: vec![],
             date: DateTuple::today().to_string(),
             dur: Duration::new(01, 00, 00).to_string(),
-            state: SporeState::DoState,
+            state: SporeState::toDoState,
         };
         &self.0.push(spore);
     }
@@ -40,7 +44,6 @@ impl Spores {
     pub fn len(self) -> usize {
         self.0.len()
     }
-
 }
 
 impl IntoIterator for Spores {
@@ -50,13 +53,6 @@ impl IntoIterator for Spores {
     fn into_iter(self) -> Self::IntoIter {
         self.0.into_iter()
     }
-}
-
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub enum SporeState {
-    DoState,
-    DoingState,
-    DoneState,
 }
 
 #[cfg(test)]
@@ -84,4 +80,3 @@ mod tests {
         assert_eq!(spores.0, s)
     }
 }
-
